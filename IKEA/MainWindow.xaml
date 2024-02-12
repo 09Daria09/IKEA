@@ -1,0 +1,40 @@
+﻿<Window x:Class="IKEA.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IKEA"
+        mc:Ignorable="d"
+        Title="Database Connection" Height="300" Width="500" 
+    Background="Thistle" Icon="/data.ico">
+    <Window.Resources>
+        <Style x:Key="AccentButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#cc66ff"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Margin="5" Text="Имя пользователя:" FontSize="16"/>
+        <TextBox Grid.Row="1" Margin="5" Text="{Binding UserName}" FontSize="16" Height="30"/>
+
+        <TextBlock Grid.Row="3" Margin="5" Text="Имя базы данных:" FontSize="16"/>
+        <TextBox Grid.Row="4" Margin="5" Text="{Binding DatabaseName}" FontSize="16" Height="30"/>
+
+        <Button Grid.Row="5" Margin="5 15 5 0" Content="Подключиться" VerticalAlignment="Bottom"
+                FontSize="16" Height="40" Padding="10" Command="{Binding ConnectCommand}"
+            Style="{StaticResource AccentButtonStyle}"/>
+    </Grid>
+</Window>

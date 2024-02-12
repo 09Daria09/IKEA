@@ -1,0 +1,49 @@
+﻿<Window x:Class="IKEA.Storage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IKEA"
+        mc:Ignorable="d"
+        Title="Storage" Height="450" Width="800" MinHeight="250" MinWidth="400"  WindowState="Maximized" Icon="/ikea (1).ico">
+    <Window.Resources>
+        <Style TargetType="Menu">
+            <Setter Property="Background" Value="#9A70B8"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="Background" Value="#9A70B8"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="#EEE8F3"/>
+            <Setter Property="RowBackground" Value="#F7F3F7"/>
+            <Setter Property="AlternatingRowBackground" Value="#EDE7ED"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#D3C1D8"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#D3C1D8"/>
+            <Setter Property="Foreground" Value="#50394C"/>
+            <Setter Property="BorderBrush" Value="#A597A7"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Операции" FontSize="18">
+                <MenuItem Header="Отобразить всю информацию о товаре" Command="{Binding ShowAllProductsCommand}" FontSize="18" />
+                <MenuItem Header="Отобразить все типы товаров" Command="{Binding ShowAllProductTypesCommand}" FontSize="18"/>
+                <MenuItem Header="Отобразить всех поставщиков" Command="{Binding ShowAllSuppliersCommand}" FontSize="18"/>
+                <MenuItem Header="Показать товар с макс. количеством" Command="{Binding ShowProductWithMaxQuantityCommand}" FontSize="18"/>
+                <MenuItem Header="Показать товар с мин. количеством" Command="{Binding ShowProductWithMinQuantityCommand}" FontSize="18" />
+                <MenuItem Header="Показать товар с мин. себестоимостью" Command="{Binding ShowProductWithMinCostCommand}" FontSize="18"/>
+                <MenuItem Header="Показать товар с макс. себестоимостью" Command="{Binding ShowProductWithMaxCostCommand}" FontSize="18"/>
+                <MenuItem Header="Показать товары заданной категории" Command="{Binding ShowProductsByCategoryCommand}" FontSize="18" ItemsSource="{Binding MenuItems}"/>
+                <MenuItem Header="Показать товары заданного поставщика" Command="{Binding ShowProductsBySupplierCommand}" FontSize="18" ItemsSource="{Binding MenuItems2}"/>
+                <MenuItem Header="Показать самый старый товар на складе" Command="{Binding ShowOldestProductCommand}" FontSize="18"/>
+                <MenuItem Header="Показать среднее количество товаров по типу" Command="{Binding ShowAverageQuantityByTypeCommand}" FontSize="18" ItemsSource="{Binding MenuItems3}"/>
+            </MenuItem>
+        </Menu>
+        <ContentControl DockPanel.Dock="Top"/>
+        <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding ProductsData}" AutoGenerateColumns="True" FontSize="18"/>
+    </DockPanel>
+</Window>
