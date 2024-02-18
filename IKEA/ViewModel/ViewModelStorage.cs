@@ -148,18 +148,27 @@ namespace IKEA.ViewModel
         {
             var additionWindow = new AddingSupplier(connectionString);
             additionWindow.ShowDialog();
+            InitializeSupplierMenuItems();
+            ShowAllProducts(obj);
+
         }
 
         private void AddNewProductType(object obj)
         {
             var additionWindow = new AddingProductType(connectionString);
             additionWindow.ShowDialog();
+            InitializeMenuItems();
+            ShowAllProducts(obj);
+
         }
 
         private void AddNewProduct(object obj)
         {
             var additionWindow = new Addition(connectionString);
             additionWindow.ShowDialog();
+            InitializeMenuItems2();
+            ShowAllProducts(obj);
+
         }
 
         private void ShowProductsOlderThanNDays(object obj)
@@ -320,6 +329,8 @@ SELECT
     p.Name AS 'Название продукта', 
     pt.Type AS 'Тип продукта', 
     s.Name AS 'Название поставщика', 
+    s.Address AS 'Адрес',
+    s.Phone AS 'Телефон',
     p.Cost AS 'Стоимость'
 FROM Products p
 INNER JOIN ProductTypes pt ON p.ProductTypeID = pt.ProductTypeID

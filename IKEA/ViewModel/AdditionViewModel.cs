@@ -69,6 +69,11 @@ namespace IKEA.ViewModel
             {
                 MessageBox.Show($"Ошибка при добавлении товара: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            SelectedSupplier = null;
+            SelectedProductType = null;
+            ProductCost = 0;
+            ProductName = string.Empty;
+
         }
         private decimal _productCost;
         public decimal ProductCost

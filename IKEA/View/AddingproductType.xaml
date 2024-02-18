@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IKEA.View"
         mc:Ignorable="d"
-        Title="Добавление типа товара" Height="148" Width="400" MinHeight="150" MinWidth="400">
+        Title="Добавление типа товара" Height="148" Width="400" MinHeight="150" MinWidth="400" Icon="/View/1486485579-add-create-new-math-sign-plus_81190.ico">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Foreground" Value="#50394C"/>
