@@ -1,4 +1,6 @@
 ﻿using IKEA.Commands;
+using IKEA.View;
+using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
@@ -30,6 +32,24 @@ namespace IKEA.ViewModel
         public ICommand ShowProductsByCategoryCommand { get; private set; }
         public ICommand ShowAverageQuantityByTypeCommand { get; private set; }
 
+
+        public ICommand ShowSupplierWithMaxProductsCommand { get; private set; }
+        public ICommand ShowSupplierWithMinProductsCommand { get; private set; }
+        public ICommand ShowProductTypeWithMaxQuantityCommand { get; private set; }
+        public ICommand ShowProductTypeWithMinQuantityCommand { get; private set; }
+        public ICommand ShowProductsOlderThanNDaysCommand { get; private set; }
+        public ICommand AddNewProductCommand { get; private set; }
+        public ICommand AddNewProductTypeCommand { get; private set; }
+        public ICommand AddNewSupplierCommand { get; private set; }
+
+        public ICommand DeleteProductCommand { get; private set; }
+        public ICommand DeleteProductTypeCommand { get; private set; }
+        public ICommand DeleteSupplierCommand { get; private set; }
+
+        public ICommand UpdateProductCommand { get; private set; }
+        public ICommand UpdateProductTypeCommand { get; private set; }
+
+        public ICommand UpdateSupplierCommand { get; private set; }
         public DataTable ProductsData
         {
             get { return _productsData; }
@@ -64,11 +84,180 @@ namespace IKEA.ViewModel
             ShowProductsByCategoryCommand = new DelegateCommand(ExecuteShowProductsByCategory, (object parameter) => true);
             ShowProductsBySupplierCommand = new DelegateCommand(ExecuteShowProductsBySupplier, (object parameter) => true);
             ShowAverageQuantityByTypeCommand = new DelegateCommand(ShowAverageQuantityByType, (object parameter) => true);
+            ShowSupplierWithMaxProductsCommand = new DelegateCommand(ShowSupplierWithMaxProducts, (object parameter) => true);
+            ShowSupplierWithMinProductsCommand = new DelegateCommand(ShowSupplierWithMinProducts, (object parameter) => true);
+            ShowProductTypeWithMaxQuantityCommand = new DelegateCommand(ShowProductTypeWithMaxQuantity, (object parameter) => true);
+            ShowProductTypeWithMinQuantityCommand = new DelegateCommand(ShowProductTypeWithMinQuantity, (object parameter) => true);
+            ShowProductsOlderThanNDaysCommand = new DelegateCommand(ShowProductsOlderThanNDays, (object parameter) => true);
+            AddNewProductCommand = new DelegateCommand(AddNewProduct, (object parameter) => true);
+            AddNewProductTypeCommand = new DelegateCommand(AddNewProductType, (object parameter) => true);
+            AddNewSupplierCommand = new DelegateCommand(AddNewSupplier, (object parameter) => true);
+            DeleteProductCommand = new DelegateCommand(OpenDeleteProductDialog, (object parameter) => true);
+            DeleteProductTypeCommand = new DelegateCommand(OpenDeleteProductTypeDialog, (object parameter) => true);
+            DeleteSupplierCommand = new DelegateCommand(OpenDeleteSupplierDialog, (object parameter) => true);
+
+
+            UpdateProductCommand = new DelegateCommand(UpdateProduct, (object parameter) => true);
+            UpdateProductTypeCommand = new DelegateCommand(UpdateProductType, (object parameter) => true);
+            UpdateSupplierCommand = new DelegateCommand(UpdateSupplier, (object parameter) => true);
+        }
+
+        private void UpdateSupplier(object obj)
+        {
+            var UpdateSupplier = new UpdateSupplier(connectionString);
+            UpdateSupplier.ShowDialog();
+            InitializeSupplierMenuItems();
+            ShowAllProducts(obj);
+        }
+
+        private void UpdateProductType(object obj)
+        {
+            var UpdateTypeProduct = new TypeProductUpdate(connectionString);
+            UpdateTypeProduct.ShowDialog();
+            InitializeMenuItems();
+            ShowAllProducts(obj);
+        }
+
+        private void UpdateProduct(object obj)
+        {
+            var UpDateWindow = new ProductUpdate(connectionString);
+            UpDateWindow.ShowDialog();
+            InitializeMenuItems2();
+            ShowAllProducts(obj);
+        }
+
+        private void OpenDeleteProductDialog(object obj)
+        {
+            var DeletionWindow = new Deletion(connectionString, 1);
+            DeletionWindow.ShowDialog();
+        }
+
+        private void OpenDeleteProductTypeDialog(object obj)
+        {
+            var DeletionWindow = new Deletion(connectionString, 2);
+            DeletionWindow.ShowDialog();
+        }
+
+        private void OpenDeleteSupplierDialog(object obj)
+        {
+            var DeletionWindow = new Deletion(connectionString, 3);
+            DeletionWindow.ShowDialog();
+        }
+
+        private void AddNewSupplier(object obj)
+        {
+            var additionWindow = new AddingSupplier(connectionString);
+            additionWindow.ShowDialog();
+        }
+
+        private void AddNewProductType(object obj)
+        {
+            var additionWindow = new AddingProductType(connectionString);
+            additionWindow.ShowDialog();
+        }
+
+        private void AddNewProduct(object obj)
+        {
+            var additionWindow = new Addition(connectionString);
+            additionWindow.ShowDialog();
+        }
+
+        private void ShowProductsOlderThanNDays(object obj)
+        {
+            DataTable dataTable = new DataTable();
+            string allProductsQuery = @"
+SELECT p.Name AS 'Название товара', d.Date AS 'Дата поставки', DATEDIFF(DAY, d.Date, GETDATE()) AS 'Дней на складе'
+FROM Products p
+JOIN Deliveries d ON p.ProductID = d.ProductID;";
+            ExecuteQueryAndFillDataTable(allProductsQuery, dataTable);
+            ProductsData = dataTable;
+
+            string input = Interaction.InputBox("Введите количество дней:", "Ввод дней", "10", -1, -1);
+            if (int.TryParse(input, out int days))
+            {
+                dataTable.Clear();
+                string filteredQuery = $@"
+SELECT p.Name AS 'Название товара', d.Date AS 'Дата поставки', DATEDIFF(DAY, d.Date, GETDATE()) AS 'Дней на складе'
+FROM Products p
+JOIN Deliveries d ON p.ProductID = d.ProductID
+WHERE DATEDIFF(DAY, d.Date, GETDATE()) = {days};";
+                ExecuteQueryAndFillDataTable(filteredQuery, dataTable);
+            }
+            else
+            {
+                MessageBox.Show("Некорректный ввод! Пожалуйста, введите число.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ShowProductTypeWithMinQuantity(object obj)
+        {
+            DataTable dataTable = new DataTable();
+            string query = @"
+SELECT TOP 1 
+    pt.Type AS 'Тип товара',
+    COUNT(p.ProductID) AS 'Количество товаров'
+FROM ProductTypes pt
+JOIN Products p ON pt.ProductTypeID = p.ProductTypeID
+GROUP BY pt.Type
+ORDER BY COUNT(p.ProductID) ASC;";
+
+            ExecuteQueryAndFillDataTable(query, dataTable);
+            ProductsData = dataTable;
+        }
+
+        private void ShowProductTypeWithMaxQuantity(object obj)
+        {
+            DataTable dataTable = new DataTable();
+            string query = @"
+SELECT TOP 1 
+    pt.Type AS 'Тип товара',
+    COUNT(p.ProductID) AS 'Количество товаров'
+FROM ProductTypes pt
+JOIN Products p ON pt.ProductTypeID = p.ProductTypeID
+GROUP BY pt.Type
+ORDER BY COUNT(p.ProductID) DESC;";
+
+            ExecuteQueryAndFillDataTable(query, dataTable);
+            ProductsData = dataTable;
+        }
+
+        private void ShowSupplierWithMinProducts(object obj)
+        {
+            DataTable dataTable = new DataTable();
+            string query = @"
+SELECT TOP 1 
+    s.SupplierID AS 'Идентификатор поставщика',
+    s.Name AS 'Название поставщика',
+    COUNT(p.ProductID) AS 'Количество товаров'
+FROM Suppliers s
+LEFT JOIN Products p ON s.SupplierID = p.SupplierID
+GROUP BY s.SupplierID, s.Name
+ORDER BY COUNT(p.ProductID) ASC;";
+
+            ExecuteQueryAndFillDataTable(query, dataTable);
+            ProductsData = dataTable;
+        }
+
+        private void ShowSupplierWithMaxProducts(object obj)
+        {
+            DataTable dataTable = new DataTable();
+            string query = @"
+SELECT TOP 1 
+    s.SupplierID AS 'Идентификатор поставщика',
+    s.Name AS 'Название поставщика',
+    COUNT(p.ProductID) AS 'Количество товаров'
+FROM Suppliers s
+LEFT JOIN Products p ON s.SupplierID = p.SupplierID
+GROUP BY s.SupplierID, s.Name
+ORDER BY COUNT(p.ProductID) DESC;";
+
+            ExecuteQueryAndFillDataTable(query, dataTable);
+            ProductsData = dataTable;
         }
 
         private void ShowAverageQuantityByType(object obj)
         {
-            string selectedType = obj.ToString(); 
+            string selectedType = obj.ToString();
             DataTable dataTable = new DataTable();
             string query = @"
 SELECT 
@@ -79,9 +268,10 @@ JOIN Products p ON d.ProductID = p.ProductID
 JOIN ProductTypes pt ON p.ProductTypeID = pt.ProductTypeID
 WHERE pt.Type = @SelectedType
 GROUP BY pt.Type;";
-            ExecuteQueryAndFillDataTable(query, dataTable, selectedType, "@SelectedType"); 
+            ExecuteQueryAndFillDataTable(query, dataTable, selectedType, "@SelectedType");
             ProductsData = dataTable;
         }
+
         public async void InitializeMenuItems2()
         {
             var productTypes = await GetCategoriesAsync();
@@ -101,7 +291,7 @@ GROUP BY pt.Type;";
             }
         }
 
-        public async void InitializeSupplierMenuItems() 
+        public async void InitializeSupplierMenuItems()
         {
             var suppliers = await GetSuppliersAsync();
 
@@ -112,13 +302,14 @@ GROUP BY pt.Type;";
                 var menuItem = new MenuItem
                 {
                     Header = supplier,
-                    Command = ShowProductsBySupplierCommand, 
+                    Command = ShowProductsBySupplierCommand,
                     CommandParameter = supplier
                 };
 
                 MenuItems2.Add(menuItem);
             }
         }
+
         private void ExecuteShowProductsBySupplier(object obj)
         {
             string supplierName = obj.ToString();
@@ -133,11 +324,12 @@ SELECT
 FROM Products p
 INNER JOIN ProductTypes pt ON p.ProductTypeID = pt.ProductTypeID
 INNER JOIN Suppliers s ON p.SupplierID = s.SupplierID
-WHERE s.Name = @SupplierName;"; 
+WHERE s.Name = @SupplierName;";
 
-            ExecuteQueryAndFillDataTable(query, dataTable, supplierName, "@SupplierName"); 
-            ProductsData = dataTable; 
+            ExecuteQueryAndFillDataTable(query, dataTable, supplierName, "@SupplierName");
+            ProductsData = dataTable;
         }
+
         private void ExecuteShowProductsByCategory(object obj)
         {
             string productType = obj.ToString();
@@ -152,11 +344,12 @@ SELECT
 FROM Products p
 INNER JOIN ProductTypes pt ON p.ProductTypeID = pt.ProductTypeID
 INNER JOIN Suppliers s ON p.SupplierID = s.SupplierID
-WHERE pt.Type = @ProductType;"; 
+WHERE pt.Type = @ProductType;";
 
             ExecuteQueryAndFillDataTable(query, dataTable, productType, "@ProductType");
             ProductsData = dataTable;
         }
+
         private void ExecuteQueryAndFillDataTable(string query, DataTable dataTable, string productType, string scalar)
         {
             try
@@ -189,14 +382,13 @@ WHERE pt.Type = @ProductType;";
                 var menuItem = new MenuItem
                 {
                     Header = type,
-                    Command = ShowProductsByCategoryCommand, 
+                    Command = ShowProductsByCategoryCommand,
                     CommandParameter = type
                 };
 
                 MenuItems.Add(menuItem);
             }
         }
-
 
         public async Task<List<string>> GetCategoriesAsync()
         {
@@ -234,7 +426,6 @@ WHERE pt.Type = @ProductType;";
             return suppliers;
         }
 
-
         private void ShowOldestProduct(object obj)
         {
             DataTable dataTable = new DataTable();
@@ -261,7 +452,7 @@ SELECT TOP 1
     Name AS ""Название продукта"",
     Cost AS ""Себестоимость""
 FROM Products
-ORDER BY Cost DESC;"; 
+ORDER BY Cost DESC;";
 
             ExecuteQueryAndFillDataTable(query, dataTable);
             ProductsData = dataTable;

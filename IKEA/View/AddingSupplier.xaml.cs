@@ -13,17 +13,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace IKEA
+namespace IKEA.View
 {
     /// <summary>
-    /// Interaction logic for Storage.xaml
+    /// Interaction logic for AddingSupplier.xaml
     /// </summary>
-    public partial class Storage : Window
+    public partial class AddingSupplier : Window
     {
-        public Storage(string _connectionInfo)
+        public AddingSupplier(string connectionString)
         {
             InitializeComponent();
-            this.DataContext = new ViewModelStorage(_connectionInfo);
+            this.DataContext = new ViewModelAddSupplier(connectionString);
         }
     }
 }

@@ -11,6 +11,8 @@
   <ItemGroup>
     <None Remove="data.ico" />
     <None Remove="ikea %281%29.ico" />
+    <None Remove="View\1486485579-add-create-new-math-sign-plus_81190.ico" />
+    <None Remove="View\1486504346-cancel-close-delete-exit-remove-x_81304.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,10 +24,8 @@
   <ItemGroup>
     <Resource Include="data.ico" />
     <Resource Include="ikea (1).ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="View\" />
+    <Resource Include="View\1486485579-add-create-new-math-sign-plus_81190.ico" />
+    <Resource Include="View\1486504346-cancel-close-delete-exit-remove-x_81304.ico" />
   </ItemGroup>
 
 </Project>

@@ -27,6 +27,7 @@
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
     </Window.Resources>
+    
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Операции" FontSize="18">
@@ -41,9 +42,36 @@
                 <MenuItem Header="Показать товары заданного поставщика" Command="{Binding ShowProductsBySupplierCommand}" FontSize="18" ItemsSource="{Binding MenuItems2}"/>
                 <MenuItem Header="Показать самый старый товар на складе" Command="{Binding ShowOldestProductCommand}" FontSize="18"/>
                 <MenuItem Header="Показать среднее количество товаров по типу" Command="{Binding ShowAverageQuantityByTypeCommand}" FontSize="18" ItemsSource="{Binding MenuItems3}"/>
+
+
+                <MenuItem Header="Поставщик с наиб. кол-вом товаров" Command="{Binding ShowSupplierWithMaxProductsCommand}" FontSize="18"/>
+                <MenuItem Header="Поставщик с наим. кол-вом товаров" Command="{Binding ShowSupplierWithMinProductsCommand}" FontSize="18"/>
+                <MenuItem Header="Тип товара с наиб. кол-вом на складе" Command="{Binding ShowProductTypeWithMaxQuantityCommand}" FontSize="18"/>
+                <MenuItem Header="Тип товара с наим. кол-вом на складе" Command="{Binding ShowProductTypeWithMinQuantityCommand}" FontSize="18"/>
+                <MenuItem Header="Товары с поставки, прошедшие N дней" Command="{Binding ShowProductsOlderThanNDaysCommand}" FontSize="18"/>
+
             </MenuItem>
+            <MenuItem Header="Добавление" FontSize="18">
+                <MenuItem Header="Добавить товар" Command="{Binding AddNewProductCommand}" FontSize="18"/>
+                <MenuItem Header="Добавить тип товара" Command="{Binding AddNewProductTypeCommand}" FontSize="18"/>
+                <MenuItem Header="Добавить поставщика" Command="{Binding AddNewSupplierCommand}" FontSize="18"/>
+            </MenuItem>
+            <MenuItem Header="Удаление" FontSize="18">
+                <MenuItem Header="Удалить товар" Command="{Binding DeleteProductCommand}" FontSize="18"/>
+                <MenuItem Header="Удалить тип товара" Command="{Binding DeleteProductTypeCommand}" FontSize="18"/>
+                <MenuItem Header="Удалить поставщика" Command="{Binding DeleteSupplierCommand}" FontSize="18"/>
+            </MenuItem>
+            <MenuItem Header="Обновление" FontSize="18">
+                <MenuItem Header="Обновить товар" Command="{Binding UpdateProductCommand}" FontSize="18"/>
+                <MenuItem Header="Обновить тип товара" Command="{Binding UpdateProductTypeCommand}" FontSize="18"/>
+                <MenuItem Header="Обновить поставщика" Command="{Binding UpdateSupplierCommand}" FontSize="18"/>
+            </MenuItem>
+
+
         </Menu>
         <ContentControl DockPanel.Dock="Top"/>
-        <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding ProductsData}" AutoGenerateColumns="True" FontSize="18"/>
+        <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding ProductsData}" AutoGenerateColumns="True" FontSize="18" Name="ProductsDataGrid">
+
+        </DataGrid>
     </DockPanel>
 </Window>
